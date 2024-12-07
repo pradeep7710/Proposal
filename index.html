@@ -1,0 +1,162 @@
+import React, { useState } from 'react';
+import { Heart, Sparkles } from 'lucide-react';
+
+const LoveProposal = () => {
+  const [isProposalRevealed, setIsProposalRevealed] = useState(false);
+  const [responseStatus, setResponseStatus] = useState(null);
+  const [hearts, setHearts] = useState([]);
+  const [loveEmojis, setLoveEmojis] = useState([]);
+
+  const generateFloatingElements = (type, count = 50) => {
+    const elements = Array(count).fill().map((_, index) => ({
+      id: index,
+      left: Math.random() * 100,
+      animationDelay: Math.random() * 5,
+      size: Math.random() * 30 + 10,
+      rotation: Math.random() * 360
+    }));
+    
+    if (type === 'hearts') {
+      setHearts(elements);
+    } else if (type === 'emojis') {
+      setLoveEmojis(elements);
+    }
+  };
+
+  const handleSurpriseClick = () => {
+    setIsProposalRevealed(true);
+    generateHearts();
+  };
+
+  const handleYesClick = () => {
+    setResponseStatus('yes');
+    generateFloatingElements('hearts');
+    generateFloatingElements('emojis');
+  };
+
+  const handleThinkClick = () => {
+    setResponseStatus('think');
+  };
+
+  const renderHearts = () => (
+    hearts.map(heart => (
+      <Heart 
+        key={heart.id} 
+        color="red" 
+        className="absolute animate-float text-red-500" 
+        style={{
+          left: `${heart.left}%`, 
+          animationDelay: `${heart.animationDelay}s`,
+          width: `${heart.size}px`,
+          height: `${heart.size}px`,
+          top: '100%',
+          transform: `rotate(${heart.rotation}deg)`
+        }}
+      />
+    ))
+  );
+
+  const renderLoveEmojis = () => (
+    loveEmojis.map(emoji => {
+      const emojis = ['❤️', '💖', '💕', '💘', '💗', '💓'];
+      const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+      
+      return (
+        <div 
+          key={emoji.id} 
+          className="absolute text-4xl animate-float" 
+          style={{
+            left: `${emoji.left}%`, 
+            animationDelay: `${emoji.animationDelay}s`,
+            top: '100%',
+            transform: `rotate(${emoji.rotation}deg)`
+          }}
+        >
+          {randomEmoji}
+        </div>
+      );
+    })
+  );
+
+  return (
+    <div className="min-h-screen bg-pink-50 flex items-center justify-center relative overflow-hidden">
+      {renderHearts()}
+      {renderLoveEmojis()}
+      
+      <div className="z-10 text-center p-8 bg-white rounded-2xl shadow-2xl transform transition-all duration-700 ease-in-out">
+        {!isProposalRevealed ? (
+          <div>
+            <h1 className="text-3xl font-bold text-pink-600 mb-6">
+              A Surprise for Anshika ❤️
+            </h1>
+            <button 
+              onClick={handleSurpriseClick}
+              className="bg-pink-500 text-white px-6 py-3 rounded-full hover:bg-pink-600 transition-colors"
+            >
+              Surprise Me!
+            </button>
+          </div>
+        ) : responseStatus === null ? (
+          <div className="space-y-6 relative">
+            <h1 className="text-4xl font-extrabold text-pink-700 animate-pulse">
+              Anshika, I Love You! 💖
+            </h1>
+            <p className="text-xl text-pink-600">
+              From the moment I first saw you, my heart knew you were the one.
+              Will you make me the happiest person in the world and be my partner forever?
+            </p>
+            <div className="flex justify-center space-x-4 mt-6">
+              <button 
+                onClick={handleYesClick}
+                className="bg-green-500 text-white px-6 py-3 rounded-full hover:bg-green-600 transform hover:scale-105 transition-all"
+              >
+                Yes, I Will! 💕
+              </button>
+              <button 
+                onClick={handleThinkClick}
+                className="bg-red-500 text-white px-6 py-3 rounded-full hover:bg-red-600 transform hover:scale-105 transition-all"
+              >
+                Let Me Think
+              </button>
+            </div>
+          </div>
+        ) : responseStatus === 'yes' ? (
+          <div className="space-y-6">
+            <h1 className="text-5xl font-extrabold text-pink-700 animate-bounce">
+              Yes! 💖🎉
+            </h1>
+            <p className="text-2xl text-pink-600">
+              Our love story begins now! 
+              Pradeep and Anshika, forever and always! 💕
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            <h1 className="text-4xl font-extrabold text-red-600 animate-pulse">
+              Think Again? 🤔
+            </h1>
+            <p className="text-xl text-red-500">
+              Are you sure you want to make me wait? 
+              Love is meant to be embraced! 💘
+            </p>
+            <div className="flex justify-center space-x-4 mt-6">
+              <button 
+                onClick={handleYesClick}
+                className="bg-green-500 text-white px-6 py-3 rounded-full hover:bg-green-600 transform hover:scale-105 transition-all"
+              >
+                Yes, I Love You! 💕
+              </button>
+              <button 
+                className="bg-gray-500 text-white px-6 py-3 rounded-full hover:bg-gray-600 transform hover:scale-105 transition-all"
+              >
+                I Need More Time
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default LoveProposal;
